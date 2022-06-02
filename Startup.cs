@@ -50,39 +50,39 @@ namespace dapr.k8s.secrets
                 endpoints.MapGet("secret", Secret);
             });
 
-            // async Task Secret(HttpContext context)
-            // {
-            //     var secretValues = await client.GetSecretAsync(
-            //         "kubernetes", // Name of the Dapr Secret Store
-            //         "super-secret", // Name of the k8s secret to get
-            //         new Dictionary<string, string>() { { "namespace", "default" } }); // Namespace where the k8s secret is deployed
-
-            //     // Get the secret value
-            //     var secretValue = secretValues["super-secret"];
-
-            //     context.Response.ContentType = "application/json";
-            //     await JsonSerializer.SerializeAsync(context.Response.Body, secretValue);
-            // }
-
-            
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/secrets/{secretStore}/{secret}", Secret);
-            });
-
-            async Task Secret(HttpContext context, string secretStore, string secret)
+            async Task Secret(HttpContext context)
             {
                 var secretValues = await client.GetSecretAsync(
                     "kubernetes", // Name of the Dapr Secret Store
-                    secretStore, // Name of the k8s secret to get
+                    "super-secret", // Name of the k8s secret to get
                     new Dictionary<string, string>() { { "namespace", "default" } }); // Namespace where the k8s secret is deployed
 
                 // Get the secret value
-                var secretValue = secretValues[secret];
+                var secretValue = secretValues["super-secret"];
 
                 context.Response.ContentType = "application/json";
                 await JsonSerializer.SerializeAsync(context.Response.Body, secretValue);
             }
+
+            
+            // app.UseEndpoints(endpoints =>
+            // {
+            //     endpoints.MapGet("/secrets/{secretStore}/{secret}", Secret);
+            // });
+
+            // async Task Secret(HttpContext context, string secretStore, string secret)
+            // {
+            //     var secretValues = await client.GetSecretAsync(
+            //         "kubernetes", // Name of the Dapr Secret Store
+            //         secretStore, // Name of the k8s secret to get
+            //         new Dictionary<string, string>() { { "namespace", "default" } }); // Namespace where the k8s secret is deployed
+
+            //     // Get the secret value
+            //     var secretValue = secretValues[secret];
+
+            //     context.Response.ContentType = "application/json";
+            //     await JsonSerializer.SerializeAsync(context.Response.Body, secretValue);
+            // }
         }
     }
 }
